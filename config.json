@@ -1,0 +1,40 @@
+{
+   "inside_rpi": {
+       "ip_address": "192.168.1.110",
+       "log_path": "/seagate2tb/joakim/data/irrigation",
+       "sensor": {
+           "rf": {
+               "channel": 23,
+               "controlled_device_name": "rpi_zero",
+               "code": 654321
+           }
+       },
+       "weather": null,
+       "reporting": {
+           "emails": ["joakim.weckman@gmail.com"],
+           "interval": "daily"
+        }
+   },
+   "outside_rpi": {
+       "ip_address": "192.168.1.111",
+       "log_path": "/rpi2tb/joakim/data/irrigation",
+       "sensor": {
+           "adc": {
+               "gain": 1, 
+               "devices": {
+                   "0": "moisture_1" 
+                }
+            },
+           "relay": {
+               "default_seconds_open": 2,
+               "channel": 23
+           },
+           "camera": {
+               "timing": ["start", "middle", "end"],
+               "modes": ["picture"],
+               "path": "/rpi2tb/joakim/data/irrigation/camera"
+            }
+       }
+   },
+   "common": null
+}

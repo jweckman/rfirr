@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "rfirr"
+version = "0.1.0"
+description = ""
+authors = ["Joakim Weckman <joakim.weckman@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+rpi-rf = "^0.9.7"
+file-read-backwards = "2.0.0"
+Adafruit_ADS1x15 = "^1.0.2"
+gpiozero = "^1.6.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^4.6"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
