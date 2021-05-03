@@ -29,14 +29,17 @@ def inside():
     if rpi_zero_power.value == 0:
         print('Outside power was toggled by inside')
         rpi_zero_power.toggle()
-    sleep(30)
+    sleep(75)
     is_on = False
-    for _ in range(4):
+    for i in range(4):
         is_on = ping(config['outside_rpi']['ip_address'])
         if is_on:
             break
         else:
-            sleep(20)
+            print('Outside power was toggled by inside')
+            logger.info(f"Outside did not turn on after first try. Retrying {i}..")
+            rpi_zero_power.toggle()
+            sleep(75)
     if not is_on:
         error_msg = f"{config['inside_rpi']['sensor']['rf']['controlled_device_name']} never started"
         logger.exception(error_msg)
