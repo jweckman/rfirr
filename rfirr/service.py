@@ -45,7 +45,7 @@ def read_log_file(f):
         if frb:
             frb.close()
 
-def ping(hostname):
+def ping(hostname:str):
     ''' Finds out whether a host is up or not'''
     response = os.system("ping -c 1 -w2 " + hostname + " > /dev/null 2>&1")
     if response == 0:
