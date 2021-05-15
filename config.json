@@ -13,6 +13,12 @@
        "reporting": {
            "emails": ["joakim.weckman@gmail.com"],
            "interval": "daily"
+        },
+        "delays": {
+            "after_wake_up": 90,
+            "wake_up_retry": 100,
+            "power_still_on": 120,
+            "powering_off": 50 
         }
    },
    "outside_rpi": {
@@ -22,7 +28,10 @@
            "adc": {
                "gain": 1, 
                "devices": {
-                   "0": "moisture_1" 
+                   "0": {
+                       "name": "moisture_1",
+                       "thresh": 20000
+                   }
                 }
             },
            "relay": {

@@ -1,7 +1,6 @@
 import logging
 import json
 from pathlib import Path
-from time import sleep
 from rpi_rf import RFDevice
 from rfirr.service import read_log_file, ping
 
@@ -49,7 +48,7 @@ class RadioOutputDevice(RFDevice):
 
     def get_value(self):
         ''' Sets the state to 0 (off) or 1 (on) depending on external information.
-            The standard implementation is a shared log file, but e.g. voltage
+            The standard implementation is a shared log file and ping, but e.g. voltage
             meter or some other sensor could also be used to know whether
             the device is on or not. Ideally we would use a pulse mode to keep
             the device on as long as there is a signal, but i could not make

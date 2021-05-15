@@ -53,5 +53,14 @@ def ping(hostname:str):
     else:
         return False 
 
+def capture_photo(path):
+    capture_photo_cmd = f"raspistill -o {str(path)}" 
+    try:
+        os.system(capture_photo_cmd)
+        logger.info('Photo was taken')
+    except Exception as e:
+        logger.error('Failed to capture photo. Reason: {e}')
+
+
 if __name__ == '__main__':
     pass
