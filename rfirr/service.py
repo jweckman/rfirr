@@ -1,20 +1,11 @@
 from collections import namedtuple
 from file_read_backwards import FileReadBackwards
 import os
-import json
 import logging
 from pathlib import Path
-from detect_device import detect_device
+from rfirr.config import config,device
 
 LogLine = namedtuple('LogLine', 'timestamp level name msg')
-device = detect_device() 
-
-if __name__ == '__main__':
-    with open(Path.cwd().parent / 'config.json', 'r', encoding='utf-8') as fr:
-        config = json.load(fr)
-else:
-    with open('config.json', 'r', encoding='utf-8') as fr:
-        config = json.load(fr)
 
 logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s %(message)s', level=logging.INFO, filename=Path(config[device]['log_path']) / 'log.log')
 logger = logging.getLogger(__name__)

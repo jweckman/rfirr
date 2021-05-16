@@ -1,5 +1,6 @@
 {
    "inside_rpi": {
+       "model_names": ["Raspberry Pi 3", "Raspberry Pi 4", "Raspberry Pi 2"],
        "ip_address": "192.168.1.110",
        "log_path": "/seagate2tb/joakim/data/irrigation",
        "sensor": {
@@ -22,6 +23,7 @@
         }
    },
    "outside_rpi": {
+       "model_names": ["Zero"],
        "ip_address": "192.168.1.111",
        "log_path": "/rpi2tb/joakim/data/irrigation",
        "sensor": {

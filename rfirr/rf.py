@@ -61,7 +61,6 @@ class RadioOutputDevice(RFDevice):
         for log_line in log_file_generator:
             # Working with a generator here that returns named tuples
             # starting from the end of the file
-            print(log_line)
             if log_line.msg == f"{self.name} power is on":
                 self.value = 1
                 return 1
