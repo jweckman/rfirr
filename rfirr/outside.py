@@ -65,10 +65,15 @@ def kill():
     os.system(killcmd)
 
 def outside_process():
-    # capture photo
-    path_photo = Path(config['outside_rpi']['sensor']['camera']['path']) / f"irr_img_{datetime.now().strftime('%Y-%m-%dT%H-%M-%S')}.jpg"
-    capture_photo(path_photo)
-    # water
-    watering_process()
-    # kill
-    kill()
+    try:
+        # capture photo
+        path_photo = Path(config['outside_rpi']['sensor']['camera']['path']) / f"irr_img_{datetime.now().strftime('%Y-%m-%dT%H-%M-%S')}.jpg"
+        capture_photo(path_photo)
+        # water
+        watering_process()
+        # kill
+        sleep(5)
+        kill()
+    except:
+        sleep(10)
+        kill()

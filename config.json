@@ -17,9 +17,9 @@
         },
         "delays": {
             "after_wake_up": 90,
-            "wake_up_retry": 100,
+            "wake_up_retry": 90,
             "power_still_on": 120,
-            "powering_off": 50 
+            "powering_off": 40
         }
    },
    "outside_rpi": {
@@ -32,12 +32,12 @@
                "devices": {
                    "0": {
                        "name": "moisture_1",
-                       "thresh": 20000
+                       "thresh": 15000
                    }
                 }
             },
            "relay": {
-               "default_seconds_open": 2,
+               "default_seconds_open": 35,
                "channel": 23
            },
            "camera": {
