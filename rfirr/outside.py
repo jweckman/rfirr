@@ -53,9 +53,11 @@ def watering_process():
             received_water = True
             break
     # Verify that plants got wet
-    adc_moisture_sensor_values, above_thresh = read_adc_moisture_sensor_values()
-    if any(above_thresh.values()) and received_water:
+    adc_moisture_sensor_values, above_thresh_after = read_adc_moisture_sensor_values()
+    if any(above_thresh_after.values()) and received_water:
         logger.critical(f"Water relay was triggered but moisture sensor was still below threshold")
+
+    return received_water, above_thresh, above_thresh_after
 
 def kill():
     '''Log that process has finished and shut down''' 

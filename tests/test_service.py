@@ -4,6 +4,7 @@ from datetime import datetime
 from pathlib import Path
 from types import GeneratorType
 from rfirr import service
+from rfirr import config
 
 @pytest.fixture()
 def log_files():
@@ -76,7 +77,6 @@ class TestReadLogFile:
             if s == '':
                 continue
             assert s in ['INFO', 'CRITICAL', 'ERROR', 'DEBUG'] 
-
 
     def test_read_log_file_bad_status(self, log_files):
         log_file = 'log_bad.log'

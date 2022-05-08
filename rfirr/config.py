@@ -21,6 +21,11 @@ def get_project_root() -> Path:
 def detect_device():
     ''' Tries to detect which device is running the code. If successful, there is no need to manually set which is the inside and outside deivce.
     NB! Only made with Raspberry Pi models in mind. Any other system will probably have to either modify this code or split the code manually'''
+    import sys
+
+    if "pytest" in sys.modules:
+        print('Pytest import detected, setting device to outside_rpi to start out')
+        return 'outside_rpi'
 
     error_msg = 'Unable to detect rpi type from /sys/firmware/devicetree/base/model. Consider splitting the code manually in the main module'
     try:
@@ -29,7 +34,7 @@ def detect_device():
         raise e
     inside_models = config['inside_rpi']['model_names']
     outside_models = config['outside_rpi']['model_names']
-    
+
     if any([x for x in inside_models if x in model]):
         return 'inside_rpi'
     elif any([x for x in outside_models if x in model]):
