@@ -1,0 +1,2 @@
+# Sample crontab that can be put under "crontab -e" to run every evening with logging to the home folder
+17 17 * * * sudo su pi -c "cd /home/pi/code/rfirr/ && /usr/local/bin/poetry run python3 -m main >> /home/pi/irrigation_cron.log 2>&1"
