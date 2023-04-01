@@ -1,7 +1,13 @@
 import logging
 import json
 from pathlib import Path
-from rpi_rf import RFDevice
+import sys
+if "pytest" in sys.modules:
+    # from tests.test_inside import RFDevice
+    class RFDevice:
+        pass
+else:
+    from rpi_rf import RFDevice
 from rfirr.service import read_log_file, ping
 
 with open('config.json', 'r', encoding='utf-8') as fr:

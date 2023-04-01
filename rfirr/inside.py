@@ -23,6 +23,7 @@ def retries(name, power_switch):
     for i in range(4):
         is_on = ping(config['outside_rpi']['ip_address'])
         if is_on:
+            power_switch.is_on = True
             break
         else:
             print('Outside power was toggled by inside')
@@ -31,8 +32,9 @@ def retries(name, power_switch):
             sleep(config['inside_rpi']['delays']['wake_up_retry'])
     if not is_on:
         error_msg = f"{name} never started"
-        logger.exception(error_msg)
+        logger.error(error_msg)
         raise RuntimeError(error_msg)
+    return is_on, power_switch
 
 def kill(name, power_switch):
     ''' Kills out power after it has become unresponsive or signalled that it initiated shutdown '''
