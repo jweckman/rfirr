@@ -26,6 +26,10 @@
        "model_names": ["Zero"],
        "ip_address": "192.168.1.111",
        "log_path": "/rpi2tb/joakim/data/irrigation",
+       "db": {
+            "file_path": "db.csv",
+            "columns": "date,did_water,moisture"
+        },
        "sensor": {
            "adc": {
                "gain": 1, 
