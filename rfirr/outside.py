@@ -8,7 +8,17 @@ import Adafruit_ADS1x15
 from rfirr.config import config, device
 from rfirr.service import capture_photo
 
-logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s %(message)s', level=logging.INFO, filename=Path(config[device]['log_path']) / 'log.log')
+# TODO: add jsonrpcserver dependency for comms using this: https://levelup.gitconnected.com/implementing-json-rpc-in-python-6ff3ff84cb45
+# rpc spec: get_status, start_irrigation, get_statistics   starts on os start, make systemd service
+# TODO: use csv to keep track instead of logs
+# name: watering_procedure.csv
+# columns: date,did_water,moisture,?
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)s %(name)s %(message)s',
+    level=logging.INFO,
+    filename=Path(config[device]['log_path']) / 'log.log'
+)
 logger = logging.getLogger(__name__)
 
 def read_adc_moisture_sensor_values():  
