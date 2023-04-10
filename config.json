@@ -28,7 +28,11 @@
        "log_path": "/rpi2tb/joakim/data/irrigation",
        "db": {
             "file_path": "db.csv",
-            "columns": "date,did_water,moisture"
+            "columns": {
+                "date": "datetime",
+                "did_water": "bool",
+                "moisture": "int"
+            }
         },
        "sensor": {
            "adc": {

@@ -3,6 +3,7 @@ from file_read_backwards import FileReadBackwards
 import os
 import logging
 from pathlib import Path
+from datetime import datetime
 from rfirr.config import config,device
 
 LogLine = namedtuple('LogLine', 'timestamp level name msg')
@@ -52,6 +53,15 @@ def capture_photo(path):
     except Exception as e:
         logger.error('Failed to capture photo. Reason: {e}')
 
+def str_to_date(s:str):
+    if 'T' in s:
+        res = datetime.strptime(s, "%Y-%m-%dT%H:%M:%S")
+    else:
+        res = datetime.strptime(s, "%Y-%m-%d")
+    return res
+
+def date_to_str(d:datetime):
+    return datetime.strftime(d, "%Y-%m-%dT%H:%M:%S")
 
 if __name__ == '__main__':
     pass
