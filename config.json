@@ -1,59 +1,60 @@
 {
-   "inside_rpi": {
-       "model_names": ["Raspberry Pi 3", "Raspberry Pi 4", "Raspberry Pi 2"],
-       "ip_address": "192.168.1.110",
-       "log_path": "/seagate2tb/joakim/data/irrigation",
-       "sensor": {
-           "rf": {
-               "channel": 23,
-               "controlled_device_name": "rpi_zero",
-               "code": 654321
-           }
-       },
-       "weather": null,
-       "reporting": {
-           "emails": ["joakim.weckman@gmail.com"],
-           "interval": "daily"
-        },
-        "delays": {
-            "after_wake_up": 90,
-            "wake_up_retry": 90,
-            "power_still_on": 120,
-            "powering_off": 40
+  "common": {
+  },
+  "inside_rpi": {
+    "model_names": ["Raspberry Pi 3", "Raspberry Pi 4", "Raspberry Pi 2"],
+    "ip_address": "192.168.1.110",
+    "log_path": "/seagate2tb/joakim/data/irrigation",
+    "sensor": {
+      "rf": {
+        "channel": 23,
+        "controlled_device_name": "rpi_zero",
+        "code": 654321
+      }
+    },
+    "weather": null,
+    "reporting": {
+      "emails": ["joakim.weckman@gmail.com"],
+      "interval": "daily"
+    },
+    "delays": {
+      "after_wake_up": 90,
+      "wake_up_retry": 90,
+      "power_still_on": 120,
+      "powering_off": 40
+    }
+  },
+  "outside_rpi": {
+    "model_names": ["Zero"],
+    "ip_address": "192.168.1.111",
+    "log_path": "/rpi2tb/joakim/data/irrigation",
+    "db": {
+      "file_path": "db.csv",
+      "columns": {
+        "date": "datetime",
+        "did_water": "bool",
+        "moisture": "int"
+      }
+    },
+    "sensor": {
+      "adc": {
+        "gain": 1, 
+        "devices": {
+          "0": {
+            "name": "moisture_1",
+            "thresh": 15000
+          }
         }
-   },
-   "outside_rpi": {
-       "model_names": ["Zero"],
-       "ip_address": "192.168.1.111",
-       "log_path": "/rpi2tb/joakim/data/irrigation",
-       "db": {
-            "file_path": "db.csv",
-            "columns": {
-                "date": "datetime",
-                "did_water": "bool",
-                "moisture": "int"
-            }
-        },
-       "sensor": {
-           "adc": {
-               "gain": 1, 
-               "devices": {
-                   "0": {
-                       "name": "moisture_1",
-                       "thresh": 15000
-                   }
-                }
-            },
-           "relay": {
-               "default_seconds_open": 35,
-               "channel": 23
-           },
-           "camera": {
-               "timing": ["start", "middle", "end"],
-               "modes": ["picture"],
-               "path": "/rpi2tb/joakim/data/irrigation/camera"
-            }
-       }
-   },
-   "common": null
+      },
+      "relay": {
+        "default_seconds_open": 35,
+        "channel": 23
+      },
+      "camera": {
+        "timing": ["start", "middle", "end"],
+        "modes": ["picture"],
+        "path": "/rpi2tb/joakim/data/irrigation/camera"
+      }
+    }
+  }
 }
