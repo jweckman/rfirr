@@ -3,16 +3,12 @@ import logging
 import gpiozero
 from time import sleep
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, time
 import Adafruit_ADS1x15
+from jsonrpcserver import Success, method, serve, InvalidParams, Result, Error
 from rfirr.config import config, device
 from rfirr.service import capture_photo
-
-# TODO: add jsonrpcserver dependency for comms using this: https://levelup.gitconnected.com/implementing-json-rpc-in-python-6ff3ff84cb45
-# rpc spec: get_status, start_irrigation, get_statistics   starts on os start, make systemd service
-# TODO: use csv to keep track instead of logs
-# name: watering_procedure.csv
-# columns: date,did_water,moisture,?
+from rfirr import db
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)s %(name)s %(message)s',
@@ -32,8 +28,6 @@ def read_adc_moisture_sensor_values():
         value = adc.read_adc(int(id_str), gain=config['outside_rpi']['sensor']['adc']['gain'])
         adc_sensor_values[int(id_str)] = value
         above_thresh[int(id_str)] = (sensor['thresh'] < value)
-    print('ADC sensor values:')
-    print(adc_sensor_values)
 
     return adc_sensor_values, above_thresh
 
@@ -63,29 +57,105 @@ def watering_process():
             received_water = True
             break
     # Verify that plants got wet
-    adc_moisture_sensor_values, above_thresh_after = read_adc_moisture_sensor_values()
+    adc_moisture_sensor_values_after, above_thresh_after = read_adc_moisture_sensor_values()
     if any(above_thresh_after.values()) and received_water:
         logger.critical(f"Water relay was triggered but moisture sensor was still below threshold")
 
-    return received_water, above_thresh, above_thresh_after
+    return received_water, above_thresh, above_thresh_after, adc_moisture_sensor_values
 
-def kill():
+def shut_down():
     '''Log that process has finished and shut down''' 
     shutdown_msg = f"{config['inside_rpi']['sensor']['rf']['controlled_device_name']} turning off now"
     logger.info(shutdown_msg)
-    killcmd = 'sudo shutdown --poweroff'
-    os.system(killcmd)
+    shutdown_cmd = 'sudo shutdown --poweroff'
+    os.system(shutdown_cmd)
 
-def outside_process():
+# RPC methods
+
+@method
+def get_status():
+    return Success({"result": "result"})
+
+@method
+def set_config_value(name, value) -> Result:
+    v = None
+    if name == 'duration':
+        try:
+            v = int(value)
+        except:
+            return InvalidParams('Value needs to be an integer')
+        config['outside_rpi']['sensor']['relay']['default_seconds_open'] = v
+        return Success(v)
+    elif name == 'moisture':
+        try:
+            v = int(value)
+        except:
+            return InvalidParams('Value needs to be an integer')
+        config['outside_rpi']['sensor']['adc']['devices']['0']['thresh'] = v
+        return Success(v)
+    elif name == 'auto':
+        try:
+            v = int(value)
+        except:
+            return InvalidParams('Value needs to be an integer')
+        config['common']['auto_run']['enable'] = False if 0 else True
+        return Success(v)
+    elif name == 'time':
+        try:
+
+            hours, minutes = value.split(':')
+            v = time(hour=hours, minute=minutes)
+        except:
+            return InvalidParams('Value needs to be a time string like 18:00')
+        config['common']['auto_run']['time'] = v
+        return Success(v)
+    else:
+        print('returned error')
+        return Error(
+            1,
+            (
+                "Fields duration or moisture should be set.\n"
+                f"Currently: {config['outside_rpi']['sensor']['relay']['default_seconds_open']}, "
+                f"{config['outside_rpi']['sensor']['adc']['devices']['0']['thresh']}, "
+                f"{config['common']['auto_run']['enable']}, "
+                f"{config['common']['auto_run']['time']}"
+            )
+        )
+
+@method
+def start_irrigation() -> Result:
+    status = outside_process(do_shutdown=False)
+    if status:
+        return Success('Success')
+    else:
+        return Error('Error')
+
+# RF mode main method
+
+def outside_process(do_shutdown=False):
+    '''Returns True if successful'''
+    status = False
     try:
         # capture photo
         path_photo = Path(config['outside_rpi']['sensor']['camera']['path']) / f"irr_img_{datetime.now().strftime('%Y-%m-%dT%H-%M-%S')}.jpg"
         capture_photo(path_photo)
         # water
-        watering_process()
+        received_water, above_thresh, above_thresh_after, adc_moisture_sensor_values = watering_process()
+        moisture_values = [mv for k, mv in adc_moisture_sensor_values.items() if mv > 0]
+        if moisture_values:
+            main_moisture = moisture_values[0]
+        else:
+            main_moisture = 0
         # kill
-        sleep(5)
-        kill()
+        status = True
+        dl = {'date': datetime.now(), 'did_water': received_water, 'moisture': main_moisture}
+        db.write_line(dl)
+        if do_shutdown:
+            sleep(5)
+            kill()
     except:
-        sleep(10)
-        kill()
+        status = False
+        if do_shutdown:
+            sleep(10)
+            kill()
+    return status

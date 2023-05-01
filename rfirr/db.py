@@ -105,3 +105,4 @@ def write_line(line: dict):
         writer.writerow(to_write)
 
 dtypes = get_dtypes()
+instantiate_db()

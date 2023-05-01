@@ -1,10 +1,16 @@
 {
   "common": {
+    "mode": "rpc",
+    "test_mode": true,
+    "auto_run": {
+      "enable": true,
+      "time": "19:00"
+    }
   },
   "inside_rpi": {
     "model_names": ["Raspberry Pi 3", "Raspberry Pi 4", "Raspberry Pi 2"],
     "ip_address": "192.168.1.110",
-    "log_path": "/seagate2tb/joakim/data/irrigation",
+    "log_path": "/home/joakim/code/rfirr",
     "sensor": {
       "rf": {
         "channel": 23,
@@ -27,7 +33,7 @@
   "outside_rpi": {
     "model_names": ["Zero"],
     "ip_address": "192.168.1.111",
-    "log_path": "/rpi2tb/joakim/data/irrigation",
+    "log_path": "/home/joakim/code/rfirr/",
     "db": {
       "file_path": "db.csv",
       "columns": {

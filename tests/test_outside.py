@@ -35,13 +35,13 @@ class TestSensorRelated:
     def test_watering_process_received_water(self,
             fixture_gpiozero_water_relay,
             fixture_set_water_relay_sleep):
-        received_water, above_thresh, above_thresh_after = watering_process()
+        received_water, above_thresh, above_thresh_after, _ = watering_process()
         assert received_water == True
         assert True in above_thresh
 
     def test_watering_process_verification(self,
             fixture_gpiozero_water_relay,
             fixture_set_water_relay_sleep):
-        received_water, above_thresh, above_thresh_after = watering_process()
+        received_water, above_thresh, above_thresh_after, _ = watering_process()
         assert True in above_thresh_after
 
