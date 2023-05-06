@@ -26,3 +26,18 @@ Recommended additional items:
 * Analogue to Digital converter (ADC) for accurate moisture sensor readings 
 * 2A fuse to protect outside rpi
 * Camera for outside rpi for monitoring plant status
+
+## Raspberry Pi OS level recommended tweaks
+### Disable blinking LED for power saving:
+Put the following commands in /etc/rc.local
+
+echo none | sudo tee /sys/class/leds/led0/trigger
+echo 1 | sudo tee /sys/class/leds/led0/brightness
+
+### Disable WiFi power saving
+WiFi power saving can cause bad connections. Disable with following line in /etc/rc.local:
+/sbin/iwconfig wlan0 power off
+
+### Disable HDMI port
+HDMI port needs additional power. Disable with following line in /etc/rc.local:
+/usr/bin/tvservice -o
