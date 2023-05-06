@@ -23,8 +23,8 @@ def detect_device():
     NB! Only made with Raspberry Pi models in mind. Any other system will probably have to either modify this code or split the code manually'''
     import sys
 
-    if "pytest" in sys.modules:
-        print('Pytest import detected, setting device to outside_rpi to start out')
+    if "pytest" in sys.modules or config['common']['test_mode'] == True:
+        print('Test mode detected, setting device to outside_rpi to start out')
         return 'outside_rpi'
 
     error_msg = 'Unable to detect rpi type from /sys/firmware/devicetree/base/model. Consider splitting the code manually in the main module'

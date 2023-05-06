@@ -63,5 +63,14 @@ def str_to_date(s:str):
 def date_to_str(d:datetime):
     return datetime.strftime(d, "%Y-%m-%dT%H:%M:%S")
 
+def str_to_time(s:str):
+    res = None
+    try:
+        hours, minutes = s.split(':')
+        res = time(hour=hours, minute=minutes)
+    except:
+        raise Warning(f"Time {s} could not be converted to a time object")
+    return res
+
 if __name__ == '__main__':
     pass

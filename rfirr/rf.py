@@ -2,7 +2,10 @@ import logging
 import json
 from pathlib import Path
 import sys
-if "pytest" in sys.modules:
+with open('config.json', 'r', encoding='utf-8') as fr:
+    config = json.load(fr)
+
+if "pytest" in sys.modules or config['common']['test_mode'] == True:
     # from tests.test_inside import RFDevice
     class RFDevice:
         pass
@@ -10,8 +13,6 @@ else:
     from rpi_rf import RFDevice
 from rfirr.service import read_log_file, ping
 
-with open('config.json', 'r', encoding='utf-8') as fr:
-    config = json.load(fr)
 
 logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s %(message)s', level=logging.INFO, filename=Path(config['inside_rpi']['log_path']) / 'log.log')
 logger = logging.getLogger(__name__)
