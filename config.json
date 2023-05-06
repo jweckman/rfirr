@@ -4,7 +4,8 @@
     "test_mode": true,
     "auto_run": {
       "enable": true,
-      "time": "19:00"
+      "time": "16:00",
+      "cycle_seconds": 60
     }
   },
   "inside_rpi": {

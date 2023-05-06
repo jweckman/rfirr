@@ -1,7 +1,10 @@
+from threading import Thread
+from jsonrpcserver import serve
+
 from rfirr.config import config, device
 from rfirr.inside import inside_process
 from rfirr.outside import outside_process
-from jsonrpcserver import serve
+from rfirr.scheduling import schedule_daemon
 
 mode = config['common']['mode']
 
@@ -11,7 +14,11 @@ mode = config['common']['mode']
 # RPC mode starts an rpc server. Intended to be used as 24/7 running service that
 # can be called to do things as needed. Much more simple but can only be used
 # if the outside process has access to power
+# Runs the self-made schedule_daemon on a separate thread 
+# due to rpc server taking control.
 if mode == 'rpc':
+    scheduling_thread = Thread(target = schedule_daemon)
+    scheduling_thread.start()
     serve('0.0.0.0', 5001)
 
 # Dual rf mode is the original mode using radio frequencies to start 
