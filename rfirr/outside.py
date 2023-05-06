@@ -3,7 +3,7 @@ import logging
 import gpiozero
 from time import sleep
 from pathlib import Path
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 import Adafruit_ADS1x15
 from jsonrpcserver import Success, method, serve, InvalidParams, Result, Error
 from rfirr.config import config, device
@@ -74,7 +74,9 @@ def shut_down():
 
 @method
 def get_status():
-    return Success({"result": "result"})
+    read_res = db.read(start_date = datetime.now() - timedelta(days=10))
+    read_res = read_res or ''
+    return Success(read_res)
 
 @method
 def set_config_value(name, value) -> Result:
@@ -128,12 +130,13 @@ def start_irrigation() -> Result:
     if status:
         return Success('Success')
     else:
-        return Error('Error')
+        return Error(1, 'Error')
 
 # RF mode main method
 
 def outside_process(do_shutdown=False):
     '''Returns True if successful'''
+    # TODO: implement dry_run and test on hardware
     status = False
     try:
         # capture photo

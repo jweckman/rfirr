@@ -4,6 +4,7 @@ import os
 import logging
 from pathlib import Path
 from datetime import datetime
+import time
 from rfirr.config import config,device
 
 LogLine = namedtuple('LogLine', 'timestamp level name msg')
@@ -67,7 +68,7 @@ def str_to_time(s:str):
     res = None
     try:
         hours, minutes = s.split(':')
-        res = time(hour=hours, minute=minutes)
+        res = time.strptime(s, '%H:%M')
     except:
         raise Warning(f"Time {s} could not be converted to a time object")
     return res
