@@ -27,7 +27,7 @@ def fixture_config_time_not_passed(monkeypatch):
     monkeypatch.setitem(
         global_config['common']['auto_run'],
         "time",
-        (datetime.utcnow() + timedelta(seconds=30)).strftime('%H:%M')
+        (datetime.utcnow() + timedelta(seconds=300)).strftime('%H:%M')
     )
     monkeypatch.setitem(
         global_config['common']['auto_run'],
