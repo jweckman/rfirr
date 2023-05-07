@@ -25,7 +25,7 @@ def read_adc_moisture_sensor_values():
     for id_str, sensor in adc_sensors.items():
         if 'moisture' not in sensor['name']:
             continue
-        value = adc.read_adc(int(id_str), gain=config['outside_rpi']['sensor']['adc']['gain'])
+        value = adc.read_adc(int(id_str), gain=config.get('sensors')['adc']['gain'])
         adc_sensor_values[int(id_str)] = value
         above_thresh[int(id_str)] = (sensor['thresh'] < value)
 
@@ -54,7 +54,7 @@ def watering_process():
     if len(above_thresh) == 0:
         print("No adc devices containing the name 'moisture' - no moisture sensor input was read") 
     # let or do not let out water depending on moisture sensor output value 20_000'''
-    water_relay = gpiozero.OutputDevice(config('sensor')['relay']['channel'])
+    water_relay = gpiozero.OutputDevice(config.get('sensors')['relay']['channel'])
     received_water = False
     for adc_channel, is_above_thresh in above_thresh.items():
         if is_above_thresh:
