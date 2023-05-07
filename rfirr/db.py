@@ -59,8 +59,8 @@ def convert_types(record: dict):
 
 def filter_date(
         recordset: csv.DictReader,
-        start:str|datetime,
-        end:str|datetime
+        start,
+        end,
     ):
     res = []
     if isinstance(start, str):
@@ -79,7 +79,7 @@ def filter_date(
 
 def read(
         start_date: str,
-        end_date: str | None = None
+        end_date = None,
     ):
     with open(file_name, 'r') as fr:
         reader = csv.DictReader(fr)
