@@ -74,11 +74,10 @@ class Config:
             model = os.popen('cat /sys/firmware/devicetree/base/model').read()
         except Exception as e:
             raise e
-        inside_models = config['inside_rpi']['model_names']
-        outside_models = config['outside_rpi']['model_names']
+        inside_models = config.inside_model_names
+        outside_models = config.outside_model_names
 
         if any([x for x in inside_models if x in model]):
-            return 'inside_rpi'
             return DeviceType.INSIDE_RPI
         elif any([x for x in outside_models if x in model]):
             return DeviceType.OUTSIDE_RPI
