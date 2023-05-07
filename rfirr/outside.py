@@ -48,6 +48,7 @@ def water_relay_toggle(water_relay):
 
 def watering_process():
     if config.test_mode:
+        print('TEST: Watering process started returning dummy values')
         return True, [True], [False], {0: 14000}
     adc_moisture_sensor_values, above_thresh = read_adc_moisture_sensor_values()
     if len(above_thresh) == 0:

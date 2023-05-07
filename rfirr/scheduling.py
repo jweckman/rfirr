@@ -20,7 +20,6 @@ def schedule_daemon(
     i = 0
     while True:
         now = datetime.utcnow()
-        print(f"now: {now}")
         config_time = str_to_time(config.auto_run_time)
         autorun_enabled = config.auto_run_enabled
         next_run_dt = datetime(
@@ -33,7 +32,9 @@ def schedule_daemon(
         if last_ran:
             if last_ran.day != now.day:
                 ran_today = False
-        print(f"no action: {cycles_without_action}\nnext_run: {next_run_dt}\nRan today: {ran_today}")
+        if config.test_mode:
+            print(f"now: {now}")
+            print(f"no action: {cycles_without_action}\nnext_run: {next_run_dt}\nRan today: {ran_today}")
         if (now > next_run_dt
                 and ran_today == False
                 and cycles_without_action > 4
