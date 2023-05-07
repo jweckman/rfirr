@@ -21,8 +21,8 @@ def schedule_daemon(
     while True:
         now = datetime.utcnow()
         print(f"now: {now}")
-        config_time = str_to_time(config['common']['auto_run']['time'])
-        autorun_enabled = config['common']['auto_run']['enable']
+        config_time = str_to_time(config.auto_run_time)
+        autorun_enabled = config.auto_run_enabled
         next_run_dt = datetime(
             year = now.year,
             month = now.month,
@@ -45,7 +45,7 @@ def schedule_daemon(
         else:
             cycles_without_action += 1
 
-        time.sleep(config['common']['auto_run']['cycle_seconds'])
+        time.sleep(config.auto_run_cycle_seconds)
         if i == cycles_max:
             return last_ran
         i += 1

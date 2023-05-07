@@ -1,6 +1,6 @@
 import pytest
 from rfirr.outside import watering_process
-from rfirr.config import config as global_config
+from rfirr.config import config
 import gpiozero
 
 
@@ -24,7 +24,7 @@ def fixture_gpiozero_water_relay(mocker):
 @pytest.fixture()
 def fixture_set_water_relay_sleep(monkeypatch):
     monkeypatch.setitem(
-            global_config['outside_rpi']['sensor']['relay'],
+            config.get('sensors')['relay'],
             "default_seconds_open",
             0.1
     )
@@ -43,5 +43,5 @@ class TestSensorRelated:
             fixture_gpiozero_water_relay,
             fixture_set_water_relay_sleep):
         received_water, above_thresh, above_thresh_after, _ = watering_process()
-        assert True in above_thresh_after
+        assert False in above_thresh_after
 

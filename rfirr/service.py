@@ -5,11 +5,14 @@ import logging
 from pathlib import Path
 from datetime import datetime
 import time
-from rfirr.config import config,device
+from rfirr.config import config
 
 LogLine = namedtuple('LogLine', 'timestamp level name msg')
 
-logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s %(message)s', level=logging.INFO, filename=Path(config[device]['log_path']) / 'log.log')
+logging.basicConfig(
+    format='%(asctime)s %(levelname)s %(name)s %(message)s',
+    level=logging.INFO,
+    filename=Path(config.get('log_path')) / 'log.log')
 logger = logging.getLogger(__name__)
 
 def read_log_file(f):
@@ -47,6 +50,9 @@ def ping(hostname:str):
         return False 
 
 def capture_photo(path):
+    if config.test_mode:
+        print('TEST: Photo taking simulated')
+        return
     capture_photo_cmd = f"raspistill -o {str(path)}" 
     try:
         os.system(capture_photo_cmd)

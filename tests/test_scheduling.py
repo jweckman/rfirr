@@ -2,41 +2,41 @@ import pytest
 from datetime import datetime, timedelta
 
 from rfirr.scheduling import schedule_daemon
-from rfirr.config import config as global_config
+from rfirr.config import config
 
 @pytest.fixture()
 def fixture_config_time_passed(monkeypatch):
-    monkeypatch.setitem(
-        global_config['common']['auto_run'],
-        "time",
+    monkeypatch.setattr(
+        config,
+        "auto_run_time",
         (datetime.utcnow() - timedelta(seconds=30)).strftime('%H:%M')
     )
-    monkeypatch.setitem(
-        global_config['common']['auto_run'],
-        "enable",
+    monkeypatch.setattr(
+        config,
+        "auto_run_enabled",
         True
     )
-    monkeypatch.setitem(
-        global_config['common']['auto_run'],
-        "cycle_seconds",
+    monkeypatch.setattr(
+        config,
+        "auto_run_cycle_seconds",
         0.1
     )
 
 @pytest.fixture()
 def fixture_config_time_not_passed(monkeypatch):
-    monkeypatch.setitem(
-        global_config['common']['auto_run'],
-        "time",
+    monkeypatch.setattr(
+        config,
+        "auto_run_time",
         (datetime.utcnow() + timedelta(seconds=300)).strftime('%H:%M')
     )
-    monkeypatch.setitem(
-        global_config['common']['auto_run'],
-        "enable",
+    monkeypatch.setattr(
+        config,
+        "auto_run_enabled",
         True
     )
-    monkeypatch.setitem(
-        global_config['common']['auto_run'],
-        "cycle_seconds",
+    monkeypatch.setattr(
+        config,
+        "auto_run_cycle_seconds",
         0.1
     )
 

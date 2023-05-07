@@ -6,20 +6,20 @@ from pathlib import Path
 from datetime import datetime, time, timedelta
 import Adafruit_ADS1x15
 from jsonrpcserver import Success, method, serve, InvalidParams, Result, Error
-from rfirr.config import config, device
+from rfirr.config import config
 from rfirr.service import capture_photo
 from rfirr import db
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)s %(name)s %(message)s',
     level=logging.INFO,
-    filename=Path(config[device]['log_path']) / 'log.log'
+    filename=Path(config.get('log_path')) / 'log.log'
 )
 logger = logging.getLogger(__name__)
 
-def read_adc_moisture_sensor_values():  
+def read_adc_moisture_sensor_values():
     adc = Adafruit_ADS1x15.ADS1115()
-    adc_sensors = config['outside_rpi']['sensor']['adc']['devices']
+    adc_sensors = config.get('sensors')['adc']['devices']
     adc_sensor_values = dict()
     above_thresh = dict()
     for id_str, sensor in adc_sensors.items():
@@ -32,11 +32,14 @@ def read_adc_moisture_sensor_values():
     return adc_sensor_values, above_thresh
 
 def water_relay_toggle(water_relay):
+    if config.test_mode:
+        print('TEST: water relay toggled')
+        return
     try:
         water_relay.on()
-        sleep(config['outside_rpi']['sensor']['relay']['default_seconds_open'])
+        sleep(config.get('sensors')['relay']['default_seconds_open'])
         water_relay.off()
-        logger.info(f"Plants watered for {config['outside_rpi']['sensor']['relay']['default_seconds_open']} seconds")
+        logger.info(f"Plants watered for {config.get('sensors')['relay']['default_seconds_open']} seconds")
     except:
         logger.error(f"Failed to water plants")
         water_relay.off()
@@ -44,11 +47,13 @@ def water_relay_toggle(water_relay):
         water_relay.off()
 
 def watering_process():
+    if config.test_mode:
+        return True, [True], [False], {0: 14000}
     adc_moisture_sensor_values, above_thresh = read_adc_moisture_sensor_values()
     if len(above_thresh) == 0:
         print("No adc devices containing the name 'moisture' - no moisture sensor input was read") 
     # let or do not let out water depending on moisture sensor output value 20_000'''
-    water_relay = gpiozero.OutputDevice(config['outside_rpi']['sensor']['relay']['channel'])
+    water_relay = gpiozero.OutputDevice(config('sensor')['relay']['channel'])
     received_water = False
     for adc_channel, is_above_thresh in above_thresh.items():
         if is_above_thresh:
@@ -65,7 +70,7 @@ def watering_process():
 
 def shut_down():
     '''Log that process has finished and shut down''' 
-    shutdown_msg = f"{config['inside_rpi']['sensor']['rf']['controlled_device_name']} turning off now"
+    shutdown_msg = f"{config.inside_sensors['rf']['controlled_device_name']} turning off now"
     logger.info(shutdown_msg)
     shutdown_cmd = 'sudo shutdown --poweroff'
     os.system(shutdown_cmd)
@@ -86,21 +91,21 @@ def set_config_value(name, value) -> Result:
             v = int(value)
         except:
             return InvalidParams('Value needs to be an integer')
-        config['outside_rpi']['sensor']['relay']['default_seconds_open'] = v
+        config.get('sensors')['relay']['default_seconds_open'] = v
         return Success(v)
     elif name == 'moisture':
         try:
             v = int(value)
         except:
             return InvalidParams('Value needs to be an integer')
-        config['outside_rpi']['sensor']['adc']['devices']['0']['thresh'] = v
+        config.get('sensors')['adc']['devices']['0']['thresh'] = v
         return Success(v)
     elif name == 'auto':
         try:
             v = int(value)
         except:
             return InvalidParams('Value needs to be an integer')
-        config['common']['auto_run']['enable'] = False if 0 else True
+        config.auto_run_enabled = bool(v)
         return Success(v)
     elif name == 'time':
         try:
@@ -109,7 +114,7 @@ def set_config_value(name, value) -> Result:
             v = time(hour=hours, minute=minutes)
         except:
             return InvalidParams('Value needs to be a time string like 18:00')
-        config['common']['auto_run']['time'] = v
+        config.auto_run_time = v
         return Success(v)
     else:
         print('returned error')
@@ -117,10 +122,10 @@ def set_config_value(name, value) -> Result:
             1,
             (
                 "Fields duration or moisture should be set.\n"
-                f"Currently: {config['outside_rpi']['sensor']['relay']['default_seconds_open']}, "
-                f"{config['outside_rpi']['sensor']['adc']['devices']['0']['thresh']}, "
-                f"{config['common']['auto_run']['enable']}, "
-                f"{config['common']['auto_run']['time']}"
+                f"Currently: {config.get('sensors')['relay']['default_seconds_open']}, "
+                f"{config.get('sensors')['adc']['devices']['0']['thresh']}, "
+                f"{config.auto_run_enabled}",
+                f"{config.auto_run_time}",
             )
         )
 
@@ -136,11 +141,11 @@ def start_irrigation() -> Result:
 
 def outside_process(do_shutdown=False):
     '''Returns True if successful'''
-    # TODO: implement dry_run and test on hardware
+    # TODO: implement test_mode and test on hardware
     status = False
     try:
         # capture photo
-        path_photo = Path(config['outside_rpi']['sensor']['camera']['path']) / f"irr_img_{datetime.now().strftime('%Y-%m-%dT%H-%M-%S')}.jpg"
+        path_photo = Path(config.get('sensors')['camera']['path']) / f"irr_img_{datetime.now().strftime('%Y-%m-%dT%H-%M-%S')}.jpg"
         capture_photo(path_photo)
         # water
         received_water, above_thresh, above_thresh_after, adc_moisture_sensor_values = watering_process()

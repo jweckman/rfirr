@@ -1,7 +1,7 @@
 import pytest
 from rfirr import rf
 from rfirr.inside import retries
-from rfirr.config import config as global_config
+from rfirr.config import config
 from rfirr import service
 
 @pytest.fixture()
@@ -51,12 +51,12 @@ def fixture_ping_returns_true(mocker):
 @pytest.fixture()
 def fixture_lower_delays(monkeypatch):
     monkeypatch.setitem(
-            global_config['inside_rpi']['delays'],
+            config.inside_delays,
             "after_wakeup",
             0.01
     )
     monkeypatch.setitem(
-            global_config['inside_rpi']['delays'],
+            config.inside_delays,
             "wake_up_retry",
             0.01
     )

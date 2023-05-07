@@ -3,18 +3,19 @@ import json
 from pathlib import Path
 import sys
 with open('config.json', 'r', encoding='utf-8') as fr:
-    config = json.load(fr)
+    raw_config = json.load(fr)
 
-if "pytest" in sys.modules or config['common']['test_mode'] == True:
+if "pytest" in sys.modules or raw_config['common']['test_mode'] == True:
     # from tests.test_inside import RFDevice
     class RFDevice:
         pass
 else:
     from rpi_rf import RFDevice
 from rfirr.service import read_log_file, ping
+from rfirr.config import config
 
 
-logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s %(message)s', level=logging.INFO, filename=Path(config['inside_rpi']['log_path']) / 'log.log')
+logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s %(message)s', level=logging.INFO, filename=Path(config.inside_log_path) / 'log.log')
 logger = logging.getLogger(__name__)
 
 class RadioOutputDevice(RFDevice):
@@ -61,7 +62,7 @@ class RadioOutputDevice(RFDevice):
             the device on as long as there is a signal, but i could not make
             that work with my hardware and therefore had to resort to other means
             of finding out whether the controlled device is on or not'''
-        if ping(config['outside_rpi']['ip_address']):
+        if ping(config.outside_ip):
             self.value = 1
             return 1
         log_file_generator = read_log_file(self.log_file)

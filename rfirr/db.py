@@ -6,8 +6,12 @@ from pathlib import Path
 from rfirr.config import config
 from rfirr.service import str_to_date, date_to_str
 
-file_name = config['outside_rpi']['db']['file_path']
-header = list(config['outside_rpi']['db']['columns'].keys())
+if not config.test_mode:
+    file_name = config.outside_db['file_path']
+else:
+    file_name = 'db_test_rfirr.csv'
+
+header = list(config.outside_db['columns'].keys())
 
 def instantiate_db():
     Path(file_name).touch(exist_ok=True)
@@ -23,7 +27,7 @@ def instantiate_db():
 
 def get_dtypes():
     dtypes = dict()
-    raw_dtypes = config['outside_rpi']['db']['columns']
+    raw_dtypes = config.outside_db['columns']
     for rd, rt in raw_dtypes.items():
         t = None
         if rt == 'datetime':
