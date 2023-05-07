@@ -29,15 +29,15 @@ class Config:
         self.auto_run_enabled = bool(self.json['common']['auto_run']['enable'])
         self.auto_run_time = self.json['common']['auto_run']['time']
         self.auto_run_cycle_seconds = self.json['common']['auto_run']['cycle_seconds']
+        self.inside_model_names = self.json['inside_rpi']['model_names']
+        self.outside_model_names = self.json['outside_rpi']['model_names']
         self.device = self.detect_device()
 
-        self.inside_model_names = self.json['inside_rpi']['model_names']
         self.inside_ip = self.json['inside_rpi']['ip_address']
         self.inside_log_path = self.json['inside_rpi']['log_path']
         self.inside_sensors = self.json['inside_rpi']['sensor']
         self.inside_delays = self.json['inside_rpi']['delays']
 
-        self.outside_model_names = self.json['outside_rpi']['model_names']
         self.outside_ip = self.json['outside_rpi']['ip_address']
         self.outside_log_path = self.json['outside_rpi']['log_path']
         self.outside_db = self.json['outside_rpi']['db']
@@ -74,8 +74,8 @@ class Config:
             model = os.popen('cat /sys/firmware/devicetree/base/model').read()
         except Exception as e:
             raise e
-        inside_models = config.inside_model_names
-        outside_models = config.outside_model_names
+        inside_models = self.inside_model_names
+        outside_models = self.outside_model_names
 
         if any([x for x in inside_models if x in model]):
             return DeviceType.INSIDE_RPI
