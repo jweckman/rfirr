@@ -141,7 +141,6 @@ def start_irrigation() -> Result:
 
 def outside_process(do_shutdown=False):
     '''Returns True if successful'''
-    # TODO: implement test_mode and test on hardware
     status = False
     try:
         # capture photo
