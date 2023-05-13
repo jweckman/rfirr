@@ -77,6 +77,20 @@ def filter_date(
                 res.append(r)
     return res
 
+def read_res_to_str(rr):
+    res = ''
+    if rr:
+        for r in rr:
+            row_str = ''
+            for v in r.values():
+                if type(v) == datetime:
+                    row_str += date_to_str(v) + ','
+                else:
+                    row_str += str(v) + ','
+            res += row_str + '\n'
+            res = res[:-2] + res[-1]
+    return res
+
 def read(
         start_date: str,
         end_date = None,

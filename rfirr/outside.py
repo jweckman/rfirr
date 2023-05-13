@@ -81,9 +81,7 @@ def shut_down():
 @method
 def get_status():
     read_res = db.read(start_date = datetime.now() - timedelta(days=10))
-    # TODO: transform output to be nicely readable, returns a list if successful
-    read_res = read_res or ''
-    return Success(str(read_res))
+    return Success(db.read_res_to_str(read_res))
 
 @method
 def set_config_value(name, value) -> Result:
