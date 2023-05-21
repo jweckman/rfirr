@@ -41,7 +41,7 @@ def water_relay_toggle(water_relay):
         water_relay.off()
         logger.info(f"Plants watered for {config.get('sensors')['relay']['default_seconds_open']} seconds")
     except:
-        logger.error(f"Failed to water plants")
+        logger.warning(f"Failed to water plants")
         water_relay.off()
     finally:
         water_relay.off()
@@ -65,7 +65,7 @@ def watering_process():
     # Verify that plants got wet
     adc_moisture_sensor_values_after, above_thresh_after = read_adc_moisture_sensor_values()
     if any(above_thresh_after.values()) and received_water:
-        logger.critical(f"Water relay was triggered but moisture sensor was still below threshold")
+        logger.warning(f"Water relay was triggered but moisture sensor was still below threshold")
 
     return received_water, above_thresh, above_thresh_after, adc_moisture_sensor_values
 

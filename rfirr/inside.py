@@ -32,7 +32,7 @@ def retries(name, power_switch):
             sleep(config.inside_delays['wake_up_retry'])
     if not is_on:
         error_msg = f"{name} never started"
-        logger.error(error_msg)
+        logger.warning(error_msg)
         raise RuntimeError(error_msg)
     return is_on, power_switch
 

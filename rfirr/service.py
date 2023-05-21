@@ -58,7 +58,7 @@ def capture_photo(path):
         os.system(capture_photo_cmd)
         logger.info('Photo was taken')
     except Exception as e:
-        logger.error('Failed to capture photo. Reason: {e}')
+        logger.warning('Failed to capture photo. Reason: {e}')
 
 def str_to_date(s:str):
     if 'T' in s:
