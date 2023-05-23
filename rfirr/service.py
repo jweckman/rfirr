@@ -53,7 +53,7 @@ def capture_photo(path):
     if config.test_mode:
         print('TEST: Photo taking simulated')
         return
-    capture_photo_cmd = f"raspistill -o {str(path)}" 
+    capture_photo_cmd = f"raspistill -rot 180 -o {str(path)}" 
     try:
         os.system(capture_photo_cmd)
         logger.info('Photo was taken')
