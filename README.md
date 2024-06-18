@@ -41,3 +41,12 @@ WiFi power saving can cause bad connections. Disable with following line in /etc
 ### Disable HDMI port
 HDMI port needs additional power. Disable with following line in /etc/rc.local:
 /usr/bin/tvservice -o
+
+## Usage
+
+1. Select desired mode of operation in the config to be either dual-pi-rf or single-pi-rpc mode.
+2. Copy and modify sample systemd unit file "irrigation.service" to /etc/systemd/system on the pi
+3. Run: systemctl enable --now irrigation.service
+4. In case using RPC, check CURL examples in rpc_examples.sh for manual operation
+
+Running the above steps in rpc mode will also automatically run the configurabe scheduler on a separate thread. This gives the flexibility of having the scheduler and the ability to complement it with manual irrigation when needed.

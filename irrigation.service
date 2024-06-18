@@ -1,0 +1,13 @@
+[Unit]
+Description=Irrigation Service
+After=network.target auditd.service
+
+[Service]
+User=zero1
+#ExecStart=/usr/sbin/sshd -D $SSHD_OPTS
+ExecStart=bash -c "cd /home/zero1/code/rfirr && /home/zero1/.cache/pypoetry/virtualenvs/rfirr-oiJmCjs2-py3.9/bin/python -m main"
+Restart=on-failure
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
