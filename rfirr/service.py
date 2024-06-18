@@ -7,6 +7,12 @@ from datetime import datetime
 import time
 from rfirr.config import config
 
+log_path = Path(config.get('log_path'))
+
+# Use fallback log path in case mount of remote drive fails
+if not log_path.is_dir():
+    log_path = Path().home()
+
 LogLine = namedtuple('LogLine', 'timestamp level name msg')
 
 logging.basicConfig(

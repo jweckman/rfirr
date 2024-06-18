@@ -144,7 +144,12 @@ def outside_process(do_shutdown=False):
     status = False
     try:
         # capture photo
-        path_photo = Path(config.get('sensors')['camera']['path']) / f"irr_img_{datetime.now().strftime('%Y-%m-%dT%H-%M-%S')}.jpg"
+        photo_file_name = f"irr_img_{datetime.now().strftime('%Y-%m-%dT%H-%M-%S')}.jpg"
+        path_photo = Path(config.get('sensors')['camera']['path'])
+        if not path_photo.is_dir():
+            path_photo = Path().home() / 'camera'
+            path_photo.mkdir(exists_ok=True)
+        path_photo = path_photo / photo_file_name
         capture_photo(path_photo)
         # water
         received_water, above_thresh, above_thresh_after, adc_moisture_sensor_values = watering_process()
